@@ -17,23 +17,30 @@ export default class Submit extends Component {
             dayToProcess: 2,
             creditCardNumber: '4111111111111111',
             cvv: '123',
-            userSession: []
+            userSession: [],
+            plan: {}
         };
     }
 
     componentDidMount() {
         axios.get('/api/session')
             .then(res => {
-                if(!res.data.id) {
+                if (!res.data.id) {
                     console.log("You are required to be logged in to place an order.");
                     this.props.history.push("/user/login/");
                 }
                 else {
                     this.setState({ userSession: res.data });
                     console.log(this.state.userSession);
-                    this.setState({customerId: this.state.userSession.id});
+                    this.setState({ customerId: this.state.userSession.id });
                     console.log(this.state.customerId);
                 }
+            });
+
+        axios.get('/api/plan/' + this.props.match.params.planId)
+            .then(res => {
+                this.setState({ plan: res.data });
+                console.log(this.state.plan);
             });
     }
 
@@ -55,7 +62,7 @@ export default class Submit extends Component {
                     alert('Order processed succesfully. Order Number: ' + result.data.order._id);
                     this.props.history.push("/order/thanks")
                 }
-                
+
             });
     }
 
@@ -67,19 +74,18 @@ export default class Submit extends Component {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            Place Order for plan {this.state.planId}
+                            Place Order for the {this.state.plan.friendlyName}
                         </h3>
                     </div>
                     <div class="panel-body">
                         <h4><Link to="/"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>Back to all Plans</Link></h4>
                         <form onSubmit={this.onSubmit}>
                             <div class="form-group">
-                                {/* TODO: Retrieve list of plans, and display plan name here as read-only.*/}
-                                <label for="planId">Select Plan:</label>
-                                <input type="text" class="form-control" name="planId" value={planId} onChange={this.onChange} placeholder="Selected Plan" />
+                                <label for="friendlyName">Selected Plan:</label>
+                                <input readOnly type="text" class="form-control" name="friendlyName" value={this.state.plan.friendlyName} />
                             </div>
                             <div class="form-group">
-                                <label for="lastName">Day you would like your shipments sent each week:</label>
+                                <label for="lastName">Select which day you would like us to send your meals:</label>
                                 <select class="form-control" name="dayToProcess" value={dayToProcess} onChange={this.onChange}>
                                     <option value="2">Monday</option>
                                     <option value="3">Tuesday</option>

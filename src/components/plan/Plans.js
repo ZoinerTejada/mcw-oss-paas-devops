@@ -21,6 +21,13 @@ export default class Plans extends Component {
                 this.setState({ plans: res.data });
                 console.log(this.state.plans);
             });
+        
+        /* // TODO: If the user is logged in, and has a plan already, set that plan as selected.
+        axios.get('/api/user/plan')
+            .then(res => {
+                
+                this.getState()
+            }); */
     }
 
     render() {
@@ -34,6 +41,7 @@ export default class Plans extends Component {
                     <Well>
                         <div class="plan-wrapper">
                             <div class="plan">
+                                <div class="name">{plan.friendlyName}</div>
                                 <div class="description">
                                     <div class="plan-details">
                                         {planLogo}
@@ -72,19 +80,19 @@ export default class Plans extends Component {
                             <li>
                                 <div class="text-container">
                                     <div class="title">We Create</div>
-                                    <div class="text">plant-based recipes with 100% wholesome ingredients.</div>
+                                    <div class="text">Our chefs create delicious, whole-foods-based recipes with 100% natural ingredients.</div>
                                 </div>
                             </li>
                             <li>
                                 <div class="text-container">
                                     <div class="title">We Deliver</div>
-                                    <div class="text">fresh, perfectly portioned ingredients in every box.</div>
+                                    <div class="text">Each week, we will send you a variety of meals, made up of fresh ingredients in the correct portions.</div>
                                 </div>
                             </li>
                             <li>
                                 <div class="text-container">
                                     <div class="title">You Cook</div>
-                                    <div class="text">amazing, flavorful meals that you’re bound to love.</div>
+                                    <div class="text">You will perform a little be of prep work, and cook unique, amazing meals that you’ll love.</div>
                                 </div>
                             </li>
                         </ul>
