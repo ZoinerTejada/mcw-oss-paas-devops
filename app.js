@@ -15,7 +15,7 @@ var app = express();
 
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://localhost:27017/best-for-you-db', { useMongoClient: true, promiseLibrary: require('bluebird') })
+mongoose.connect('mongodb://localhost:27017/best-for-you-organics', { useMongoClient: true, promiseLibrary: require('bluebird') })
   .then(() => console.log('connection succesful'))
   .catch((err) => console.error(err));
 var db = mongoose.connection;
@@ -27,9 +27,9 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.use(session(
   {
     secret: 'best-for-you-organics',
-    resave: true,
-    saveUninitialized: false,
-    store: new mongoStore({ mongooseConnection: db })
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
   }
 ));
 

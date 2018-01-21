@@ -30,7 +30,7 @@ export default class Register extends Component {
 
     onSubmit = (e) => {
         // Encrypt the password before sending it to the database.
-        this.state.password = this.encryptPassword();
+        //this.state.password = this.encryptPassword();
 
         e.preventDefault();
 
@@ -44,12 +44,12 @@ export default class Register extends Component {
                 }
             });
     }
-
+/* 
     encryptPassword() {
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(this.state.password, salt);
         return hash;
-    }
+    } */
 
     render() {
         const { firstName, lastName, email, password, address1, address2, city, state, country, postalCode, phone } = this.state;

@@ -28,8 +28,11 @@ export default class Login extends Component {
                 if (result.data.code == 200) {
                     
                     console.log(result.data.success);
-                    window.open('/');
-                    //this.props.history.push("/");
+                    const location = {
+                        pathname: '/',
+                        state: {from: {pathname: '/user/login'}}
+                    }
+                    this.props.history.push(location);
                 }
                 else if (result.data.code == 204) {
                     alert(result.data.failure);

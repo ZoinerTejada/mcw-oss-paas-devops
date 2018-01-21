@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "async": "^2.6.0",
     "axios": "^0.17.1",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",

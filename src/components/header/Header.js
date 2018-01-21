@@ -4,27 +4,34 @@ import { Button, Nav, Navbar, NavItem } from 'react-bootstrap';
 import axios from 'axios';
 import logo from '../../logo.png'
 import './Header.css'
+import { request } from 'http';
 
 export default class Header extends Component {
     constructor(props) {
         super(props);
+        
         this.state = {
-            userSession: []
+            userId: '',
+            userName: ''
         };
     }
 
     componentDidMount() {
         axios.get('/api/session')
             .then(res => {
-                this.setState({ userSession: res.data });
-                console.log(this.state.userSession);
+                console.log(res.data);
+                if (res.data.id) {
+                    this.setState({ userId: res.data.id, userName: res.data.name });
+                    console.log(this.state);
+                }
             });
     }
 
     logout(){
-        axios.get('/api/user/logout')
-          .then((result) => {
-            this.props.history.push("/")
+        axios.post('/api/user/logout')
+          .then(res => {
+              console.log('User successfully logged out.');
+              window.location = '/';
           });
       }
 
@@ -46,10 +53,10 @@ export default class Header extends Component {
                     </NavItem>
                     </Nav>
                     <Nav pullRight>
-                        <NavItem eventKey={1} href={this.state.userSession.id ? '/user/' + this.state.userSession.id : 'user/login'}>
-                            {this.state.userSession.name ? 'Welcome ' + this.state.userSession.name : 'Sign In'}
+                        <NavItem eventKey={1} href={this.state.userId ? '/user/' + this.state.userId : 'user/login'}>
+                            {this.state.userName ? 'Welcome ' + this.state.userName : 'Sign In'}
                         </NavItem>
-                        {this.state.userSession.id ? <button onClick={this.logout.bind(this)} class="btn btn-outline-danger">Logout</button> : ''}
+                        {this.state.userId ? <button onClick={this.logout.bind(this)} class="btn btn-outline-danger">Logout</button> : ''}
                         {/* <NavItem eventKey={2} href="#">
                             Add Search Box...
                         </NavItem> */}
