@@ -29,7 +29,7 @@ app.use(session(
     secret: 'best-for-you-organics',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    store: new mongoStore({ mongooseConnection: db })
   }
 ));
 

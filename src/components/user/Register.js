@@ -29,9 +29,6 @@ export default class Register extends Component {
     }
 
     onSubmit = (e) => {
-        // Encrypt the password before sending it to the database.
-        //this.state.password = this.encryptPassword();
-
         e.preventDefault();
 
         const { firstName, lastName, email, password, address1, address2, city, state, country, postalCode, phone } = this.state;
@@ -40,16 +37,10 @@ export default class Register extends Component {
             .then((result) => {
                 if (result.data.code == 200) {
                     console.log("User registration successful.");
-                    this.props.history.push("/");
+                    window.location('/');
                 }
             });
     }
-/* 
-    encryptPassword() {
-        var salt = bcrypt.genSaltSync(10);
-        var hash = bcrypt.hashSync(this.state.password, salt);
-        return hash;
-    } */
 
     render() {
         const { firstName, lastName, email, password, address1, address2, city, state, country, postalCode, phone } = this.state;
@@ -62,7 +53,6 @@ export default class Register extends Component {
             </h3>
                     </div>
                     <div class="panel-body">
-                        <h4><Link to="/"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>Customer List</Link></h4>
                         <form onSubmit={this.onSubmit}>
                             <div class="form-group">
                                 <label for="firstName">First Name:</label>

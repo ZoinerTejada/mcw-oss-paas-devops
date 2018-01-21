@@ -48,9 +48,9 @@ export default class Header extends Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
-                        <NavItem eventKey={1} href="#">
-                            My Plan
-                    </NavItem>
+                        <NavItem eventKey={1} href="/">
+                            Home
+                        </NavItem>
                     </Nav>
                     <Nav pullRight>
                         <NavItem eventKey={1} href={this.state.userId ? '/user/' + this.state.userId : 'user/login'}>

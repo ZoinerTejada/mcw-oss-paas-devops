@@ -24,9 +24,14 @@ router.get('/:id', function (req, res, next) {
 router.post('/', function (req, res, next) {
     User.create(req.body, function (err, user) {
         if (err) return next(err);
+        req.session.user = {
+            "id":user._id,
+            "name":user.firstName
+        };
+
         res.json({
             "code": 200,
-            "success": "User logged in successfully.",
+            "success": "User registered in successfully.",
             "user": user
         });
     });
@@ -41,7 +46,7 @@ router.put('/:id', function (req, res, next) {
 });
 
 router.post('/login', function (req, res, next) {
-    User.findOne({ 'email': req.body.email }, function (err, user) {
+    User.authenticate(req.body.email, req.body.password, function(err, user) {
         if(err) return next(err);
         if (user) {
             if (bcrypt.compareSync(req.body.password, user.password)) {

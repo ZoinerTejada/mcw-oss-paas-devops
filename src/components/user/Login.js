@@ -26,13 +26,8 @@ export default class Login extends Component {
         axios.post('/api/user/login', { email, password })
             .then((result) => {
                 if (result.data.code == 200) {
-                    
                     console.log(result.data.success);
-                    const location = {
-                        pathname: '/',
-                        state: {from: {pathname: '/user/login'}}
-                    }
-                    this.props.history.push(location);
+                    window.location = '/';
                 }
                 else if (result.data.code == 204) {
                     alert(result.data.failure);
