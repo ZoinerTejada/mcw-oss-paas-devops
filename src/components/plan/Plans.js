@@ -21,13 +21,6 @@ export default class Plans extends Component {
                 this.setState({ plans: res.data });
                 console.log(this.state.plans);
             });
-        
-        /* // TODO: If the user is logged in, and has a plan already, set that plan as selected.
-        axios.get('/api/user/plan')
-            .then(res => {
-                
-                this.getState()
-            }); */
     }
 
     render() {
