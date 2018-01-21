@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import axios from 'axios';
 import logo from '../../logo.png'
 import './Header.css'
-import { request } from 'http';
 
 export default class Header extends Component {
     constructor(props) {

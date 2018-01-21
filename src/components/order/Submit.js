@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
-//import Plan from './Plan';
-import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Col, Grid, Well, Button } from 'react-bootstrap';
-import logo from '../../logo.png';
-//import './Order.css';
 
 export default class Submit extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -58,11 +52,10 @@ export default class Submit extends Component {
         axios.post('/api/order', { customerId, planId, dayToProcess })
             .then((result) => {
                 alert(JSON.stringify(result));
-                if (result.data.code == 200) {
+                if (result.data.code === 200) {
                     alert('Order processed succesfully. Order Number: ' + result.data.order._id);
                     this.props.history.push("/order/thanks")
                 }
-
             });
     }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Panel } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 
 export default class Thanks extends Component {
     render() {

@@ -15,7 +15,6 @@ async.series([
             if (err) throw err;
             db.dropDatabase(function (err, result) {
                 db.close(true, function (err, result) {
-                    console.log('database dropped...');
                     callback(null, 'SUCCESS - dropped database');
                 });
             });
@@ -25,7 +24,7 @@ async.series([
         mongoose.Promise = require('bluebird');
         mongoose.connect(databaseUrl, { useMongoClient: true, promiseLibrary: require('bluebird') })
             .then(() => {
-                console.log('db connection succesful');
+                console.log('Connected to MongoDB database: ' + mongoose.connection.name);
                 callback(null, 'SUCCESS - Connected to MongoDB');
             });
     },
@@ -68,7 +67,7 @@ async.series([
             },
             function (err) {
                 if (err) console.dir(err);
-                console.log('Plans seeded.');
+                console.log('Finished seeding plans.');
                 callback(null, 'Success - Seed plans');
             }
         );

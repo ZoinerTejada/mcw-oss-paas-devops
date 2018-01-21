@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-var bcrypt = require('bcryptjs');
 
 export default class Edit extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -27,8 +25,6 @@ export default class Edit extends Component {
     }
 
     onSubmit = (e) => {
-        // Encrypt the password before sending it to the database.
-        this.state.password = this.encryptPassword();
         e.preventDefault();
 
         const { firstName, lastName, email, password, address1, address2, city, state, country, postalCode, phone } = this.state.user;
@@ -37,12 +33,6 @@ export default class Edit extends Component {
             .then((result) => {
                 this.props.history.push("/show/" + this.props.match.params.id)
             });
-    }
-
-    encryptPassword() {
-        var salt = bcrypt.genSaltSync(10);
-        var hash = bcrypt.hashSync(this.state.password, salt);
-        return hash;
     }
 
     render() {

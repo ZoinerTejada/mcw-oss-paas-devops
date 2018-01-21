@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 
@@ -25,11 +24,11 @@ export default class Login extends Component {
 
         axios.post('/api/user/login', { email, password })
             .then((result) => {
-                if (result.data.code == 200) {
+                if (result.data.code === 200) {
                     console.log(result.data.success);
                     window.location = '/';
                 }
-                else if (result.data.code == 204) {
+                else if (result.data.code === 204) {
                     alert(result.data.failure);
                 }
             });

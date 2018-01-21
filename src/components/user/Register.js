@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-var bcrypt = require('bcryptjs');
 
 export default class Register extends Component {
     constructor() {
@@ -35,7 +32,7 @@ export default class Register extends Component {
 
         axios.post('/api/user', { firstName, lastName, email, password, address1, address2, city, state, country, postalCode, phone })
             .then((result) => {
-                if (result.data.code == 200) {
+                if (result.data.code === 200) {
                     console.log("User registration successful.");
                     window.location('/');
                 }

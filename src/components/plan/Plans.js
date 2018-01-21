@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Col, Grid, Row, Well, Button } from 'react-bootstrap';
+import { Col, Grid, Row, Well } from 'react-bootstrap';
 import logo from '../../logo.png';
 import './Plans.css';
 
