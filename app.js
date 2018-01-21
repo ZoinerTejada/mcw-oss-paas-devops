@@ -13,9 +13,11 @@ var userSession = require('./routes/session');
 
 var app = express();
 
+var databaseUrl = 'mongodb://localhost:27017/best-for-you-organics';
+
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://localhost:27017/best-for-you-organics', { useMongoClient: true, promiseLibrary: require('bluebird') })
+mongoose.connect(databaseUrl, { useMongoClient: true, promiseLibrary: require('bluebird') })
   .then(() => console.log('connection succesful'))
   .catch((err) => console.error(err));
 var db = mongoose.connection;
