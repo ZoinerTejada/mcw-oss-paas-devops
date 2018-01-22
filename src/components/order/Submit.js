@@ -6,13 +6,15 @@ export default class Submit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customerId: '',
+            orderId: '',
+            userId: '',
             planId: this.props.match.params.planId,
-            dayToProcess: 2,
+            sendNotification: false,
             creditCardNumber: '4111111111111111',
             cvv: '123',
             userSession: [],
-            plan: {}
+            plan: {},
+            user: {}
         };
     }
 
@@ -26,8 +28,19 @@ export default class Submit extends Component {
                 else {
                     this.setState({ userSession: res.data });
                     console.log(this.state.userSession);
-                    this.setState({ customerId: this.state.userSession.id });
-                    console.log(this.state.customerId);
+                    this.setState({ userId: this.state.userSession.id });
+                    console.log(this.state.userId);
+
+                    axios.get('/api/user/' + this.state.userId)
+                        .then(result => {
+                            this.setState({ user: result.data });
+                            console.log(this.state.user);
+                            if (this.state.user.phone && this.state.user.phone != '') {
+                                const state = this.state;
+                                state['sendNotification'] = true;
+                                this.setState(state);
+                            }
+                        });
                 }
             });
 
@@ -47,20 +60,18 @@ export default class Submit extends Component {
     onSubmit = (e) => {
         e.preventDefault();
 
-        const { customerId, planId, dayToProcess, creditCardNumber, cvv } = this.state;
+        const { orderId, userId, planId, sendNotification, creditCardNumber, cvv } = this.state;
 
-        axios.post('/api/order', { customerId, planId, dayToProcess })
+        axios.post('/api/order', { orderId, userId, planId, sendNotification })
             .then((result) => {
-                alert(JSON.stringify(result));
                 if (result.data.code === 200) {
-                    alert('Order processed succesfully. Order Number: ' + result.data.order._id);
                     this.props.history.push("/order/thanks")
                 }
             });
     }
 
     render() {
-        const { customerId, planId, dayToProcess, creditCardNumber, cvv } = this.state;
+        const { orderId, userId, planId, sendNotification, creditCardNumber, cvv } = this.state;
 
         return (
             <div class="container">
@@ -76,17 +87,6 @@ export default class Submit extends Component {
                             <div class="form-group">
                                 <label for="friendlyName">Selected Plan:</label>
                                 <input readOnly type="text" class="form-control" name="friendlyName" value={this.state.plan.friendlyName} />
-                            </div>
-                            <div class="form-group">
-                                <label for="lastName">Select which day you would like us to send your meals:</label>
-                                <select class="form-control" name="dayToProcess" value={dayToProcess} onChange={this.onChange}>
-                                    <option value="2">Monday</option>
-                                    <option value="3">Tuesday</option>
-                                    <option value="4">Wednesday</option>
-                                    <option value="5">Thursday</option>
-                                    <option value="6">Friday</option>
-                                    <option value="7">Saturday</option>
-                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="creditCardNumber">Credit Card Number:</label>

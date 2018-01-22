@@ -113,7 +113,7 @@ async.series([
                 callback(null, 'SUCCESS - Seed Users');
             }
         );
-    }
+    } // TODO: Seed some Orders, and a few more users to associate with the orders...
 ], function (err, results) {
     console.log('Database seeding complete');
     process.exit(0);

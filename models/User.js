@@ -13,7 +13,7 @@ var UserSchema = new mongoose.Schema({
   state: { type: String, required: true },
   country: { type: String, default: 'US', required: true },
   postalCode: { type: String, required: true },
-  phone: { type: String, required: true },
+  phone: { type: String, required: false },
   createdDate: { type: Date, default: Date.now, required: true },
   modifiedDate: { type: Date, default: Date.now, required: true }
 });
