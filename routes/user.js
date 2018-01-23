@@ -14,7 +14,7 @@ router.get('/', function (req, res, next) {
 
 /* Get single User by id */
 router.get('/:id', function (req, res, next) {
-    User.findById(req.params.id, function (err, user) {
+    User.findOne({ 'email': req.params.id }, function (err, user) {
         if (err) return next(err);
         res.json(user);
     });
@@ -25,7 +25,7 @@ router.post('/', function (req, res, next) {
     User.create(req.body, function (err, user) {
         if (err) return next(err);
         req.session.user = {
-            "id":user._id,
+            "id":user.email,
             "name":user.firstName
         };
 
@@ -51,7 +51,7 @@ router.post('/login', function (req, res, next) {
         if (user) {
             if (bcrypt.compareSync(req.body.password, user.password)) {
                 req.session.user = {
-                    "id":user._id,
+                    "id":user.email,
                     "name":user.firstName
                 };
 

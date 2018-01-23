@@ -15,7 +15,7 @@ module.exports = function (context, newOrders) {
 		var sendNotification = newOrder['$v']['sendNotification']['$v'];
 		var processed = newOrder['$v']['processed']['$v'];
 		if (!processed) {
-			context.log('Sent to orderqueue: order id ', orderId);
+			context.log('Sending order to orderqueue for order id ', orderId);
 			context.bindings.outputQueue = {
 				orderId: orderId,
 				userId: userId,
@@ -23,7 +23,7 @@ module.exports = function (context, newOrders) {
 			};
 		}
 		else {
-			context.log('Already processed, not sent to orderqueue: order id ', orderId);
+			context.log('Already processed, not sent to orderqueue for order id ', orderId);
 		}
     }
 	context.done();
