@@ -7,7 +7,7 @@ export default class Order extends Component {
     render() {
       return (
         <Switch>
-            <Route exact path='/order/thanks' component={Thanks}/>
+            <Route exact path='/order/thanks/:id' component={Thanks}/>
             <Route path='/order/:planId' component={Submit}/>
         </Switch>
       );

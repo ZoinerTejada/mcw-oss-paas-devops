@@ -6,7 +6,7 @@ export default class Submit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            orderId: '',
+            id: '',
             userId: '',
             planId: this.props.match.params.planId,
             sendNotification: false,
@@ -65,7 +65,7 @@ export default class Submit extends Component {
         axios.post('/api/order', { orderId, userId, planId, sendNotification })
             .then((result) => {
                 if (result.data.code === 200) {
-                    this.props.history.push("/order/thanks")
+                    this.props.history.push('/order/thanks/'+result.data.order._id);
                 }
             });
     }

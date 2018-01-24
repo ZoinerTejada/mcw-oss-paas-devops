@@ -1,12 +1,17 @@
 var async = require('async');
 var MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
 
 var Order = require('../models/Order');
 var Plan = require('../models/Plan');
 var User = require('../models/User');
 
 var databaseUrl = 'mongodb://localhost:27017/best-for-you-organics';
+
+var twoPersonPlanId = new ObjectId();
+var fourPersonPlanId = new ObjectId();
+var highProPlanId = new ObjectId();
 
 async.series([
     function (callback) {
@@ -33,6 +38,7 @@ async.series([
 
         var plans = [
             new Plan({
+                _id: twoPersonPlanId,
                 name: 'two_person',
                 friendlyName: 'Two Person Plan',
                 portionSize: '1-2 Person',
@@ -41,6 +47,7 @@ async.series([
                 description: 'Our basic plan, delivering 3 meals per week, which will feed 1-2 people.'
             }),
             new Plan({
+                _id: fourPersonPlanId,
                 name: 'four_person',
                 friendlyName: 'Four Person Plan',
                 portionSize: '3-4 Person',
@@ -49,6 +56,7 @@ async.series([
                 description: 'Our family plan, delivering 3 meals per week, which will feed 3-4 people.'
             }),
             new Plan({
+                _id: highProPlanId,
                 name: 'high_protein',
                 friendlyName: 'High-Pro Plan',
                 portionSize: '1-2 Person',
@@ -84,8 +92,7 @@ async.series([
                 address1: '123 Main St',
                 city: 'Carmel',
                 state: 'IN',
-                postalCode: '46033',
-                phone: '3175551212'
+                postalCode: '46033'
             }),
             new User({
                 email: 'john.smith@bfyo.com',
@@ -95,8 +102,7 @@ async.series([
                 address1: '123 Main St',
                 city: 'Virginia Beach',
                 state: 'VA',
-                postalCode: '23456',
-                phone: '7575551212'
+                postalCode: '23456'
             })
         ];
 
@@ -113,19 +119,44 @@ async.series([
                 callback(null, 'SUCCESS - Seed Users');
             }
         );
-    } // TODO: Seed some Orders, and a few more users to associate with the orders...
+    },
+    function (callback) {
+        console.log('Seeding orders...');
+
+        var orders = [
+            new Order({
+	            id : new ObjectId().toHexString(),
+	            userId : 'john.smith@bfyo.com',
+	            planId : twoPersonPlanId.toHexString(),
+	            processed : false,
+	            notificationSent : false,
+	            sendNotification : false
+            }),
+            new Order({
+	            id : new ObjectId().toHexString(),
+	            userId : 'demouser@bfyo.com',
+	            planId : fourPersonPlanId.toHexString(),
+	            processed : false,
+	            notificationSent : false,
+	            sendNotification : false
+            })
+        ];
+
+        async.eachSeries(orders,
+            function(order, orderSavedCallback) {
+                order.save(function (err) {
+                    if (err) console.dir(err);
+                    orderSavedCallback();
+                });
+            },
+            function(err) {
+                if (err) console.dir(err);
+                console.log('Finished seeding orders.');
+                callback(null, 'SUCCESS - Seed Orders');
+            }
+        )
+    }
 ], function (err, results) {
     console.log('Database seeding complete');
     process.exit(0);
 });
-
-
-/*
-var orderSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-    planId: { type: Schema.Types.ObjectId, required: true, ref: 'Plan' },
-    dayToProcess: { type: Number, required: true },
-    orderDate: { type: Date, default: Date.now, required: true },
-    notificationSent: { type: Boolean, default: false, required: true }
-  });
-*/
