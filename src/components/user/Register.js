@@ -8,13 +8,13 @@ export default class Register extends Component {
             firstName: '',
             lastName: '',
             email: '',
-            password: '',
-            address1: '',
+            password: 'Password.1!!',
+            address1: '123 Main St.',
             address2: '',
-            city: '',
-            state: '',
-            country: '',
-            postalCode: '',
+            city: 'Seattle',
+            state: 'WA',
+            country: 'US',
+            postalCode: '98101',
             phone: ''
         };
     }
@@ -34,7 +34,7 @@ export default class Register extends Component {
             .then((result) => {
                 if (result.data.code === 200) {
                     console.log("User registration successful.");
-                    window.location('/');
+                    window.location = '/';
                 }
             });
     }
