@@ -1,0 +1,192 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName": {
+            "defaultValue": "LabVM",
+            "type": "string",
+            "metadata": {
+                "description": "Name to assign to the virtual machine"
+            }
+        },
+        "vmUsername": {
+            "defaultValue": "demouser",
+            "type": "string",
+            "metadata": {
+                "description": "User name used to log into the VM"
+            }
+        },
+        "vmPassword": {
+            "defaultValue": "Password.1!!",
+            "type": "securestring",
+            "metadata": {
+                "description": "The password must be at least 10 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter."
+            }
+        }
+    },
+    "variables": {
+        "cleanVmName": "[replace(replace(replace(toLower(parameters('vmName')), '-', ''), '_', ''), '.', '')]",
+        "vNetName": "[concat(resourceGroup().name, '-vnet')]",
+        "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('vNetName'))]",
+        "nicName": "[concat(variables('cleanVmName'), 'nic')]",
+        "nsgName": "LabVM-nsg",
+        "storageAccountName": "[concat(variables('cleanVmName'), 'vmstorage')]",
+        "subnetName": "default",
+        "publicIpAddressName": "[concat(variables('cleanVmName'), 'publicip')]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('vmName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2017-03-30",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('vmName')]",
+                    "adminUsername": "[parameters('vmUsername')]",
+                    "adminPassword": "[parameters('vmPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_D4s_v3"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsDesktop",
+                        "offer": "Windows-10",
+                        "sku": "RS3-Pro",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "vhd": {
+                            "uri": "[concat(concat(reference(resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), parameters('vmName'), '20180308161916.vhd')]"
+                        },
+                        "name": "[parameters('vmName')]"
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                        }
+                    ]
+                },
+                "licenseType": "Windows_Client"
+            }
+        },
+        {
+            "name": "[variables('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2017-10-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+              "name": "Premium_LRS",
+              "tier": "Premium"
+            },
+            "dependsOn": [],
+            "tags": {
+              "displayname": "vmattachedstorage"
+             },
+            "kind": "Storage"
+        },
+        {
+            "name": "[variables('vNetName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2017-10-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "10.0.0.0/24"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('nicName')]",
+            "apiVersion": "2017-10-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpAddressName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/', variables('vNetName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpAddressName'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[variables('publicIpAddressName')]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2017-10-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publicIpAllocationMethod": "Dynamic"
+            },
+            "sku": {
+                "name": "Basic"
+            }
+        },
+        {
+            "name": "[variables('nsgName')]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2017-10-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "protocol": "TCP",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourceAddressPrefix": "*",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*",
+                            "destinationPortRange": "3389"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "vmUsername": {
+            "type": "string",
+            "value": "[parameters('vmUsername')]"
+        }
+    }
+}
