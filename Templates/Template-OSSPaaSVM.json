@@ -30,7 +30,7 @@
         "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('vNetName'))]",
         "nicName": "[concat(variables('cleanVmName'), 'nic')]",
         "nsgName": "LabVM-nsg",
-        "storageAccountName": "[concat(variables('cleanVmName'), 'vmstorage')]",
+        "storageAccountName": "[concat(variables('cleanVmName'), subscription().subscriptionId, '-vmstorage')]",
         "subnetName": "default",
         "publicIpAddressName": "[concat(variables('cleanVmName'), 'publicip')]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]"
