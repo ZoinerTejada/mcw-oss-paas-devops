@@ -30,7 +30,7 @@
         "location": "[resourceGroup().location]",
         "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
         "virtualMachineSize": "Standard_D2s_v3",
-        "networkInterfaceName": "[concat(variables('cleanVmName'), uniqueString(resourceGroup().id)]",
+        "networkInterfaceName": "[concat(variables('cleanVmName'), uniqueString(resourceGroup().id))]",
         "networkSecurityGroupName": "[concat(variables('cleanVmName'), '-nsg')]",
         "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
         "subnetName": "default",
@@ -82,31 +82,34 @@
                         }
                     ]
                 }
-            }
-        },
-        {
-            "name": "[concat('microsoft.custom-script-linux-', uniqueString(resourceGroup().id))]",
-            "apiVersion": "2015-01-01",
-            "type": "extensions",
-            "properties": {
-                "publisher": "Microsoft.OSTCExtensions",
-                "type": "CustomScriptForLinux",
-                "typeHanderVersion": "1.4",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "[variables('customScriptUri')]"
-                    ],
-                    "commandToExecute": "[concat('bash ', variables('customScriptFileName'))]"
-                }
             },
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
-            ],
-            "tags": {
-                "displayName": "ConfigureLinuxVM"
-            }
-        },
+            "resources": [
+                {
+                    "name": "CustomScriptExtension1",
+                    "apiVersion": "2016-03-30",
+                    "type": "extensions",
+                    "location": "[variables('location')]",
+                    "properties": {
+                        "publisher": "Microsoft.OSTCExtensions",
+                        "type": "CustomScriptForLinux",
+                        "typeHandlerVersion": "1.4",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                                "[variables('customScriptUri')]"
+                            ],
+                            "commandToExecute": "[concat('bash ', variables('customScriptFileName'))]"
+                        }
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
+                    ],
+                    "tags": {
+                        "displayName": "ConfigureLinuxVM"
+                    }
+                }
+            ]
+        },        
         {
             "name": "[variables('virtualNetworkName')]",
             "type": "Microsoft.Network/virtualNetworks",
