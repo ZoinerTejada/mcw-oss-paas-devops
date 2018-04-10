@@ -38,8 +38,8 @@
         "publicIpAddressName": "[concat(variables('cleanVmName'), '-ip')]",
         "addressPrefix": "172.16.7.0/24",
         "subnetPrefix": "172.16.7.0/24",
-        "customScriptFileName": "linuxlabvmconfig.sh",
-        "customScriptUri": "https://raw.githubusercontent.com/ZoinerTejada/mcw-oss-paas-devops/master/setup/linuxlabvmconfig.sh"
+        "customScriptFileName": "labvmconfig.sh",
+        "customScriptUri": "https://raw.githubusercontent.com/ZoinerTejada/mcw-oss-paas-devops/master/LabVM/labvmconfig.sh"
     },
     "resources": [
         {
